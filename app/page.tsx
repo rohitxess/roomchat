@@ -11,12 +11,12 @@ export default function Home() {
   const [ messages, setMesages ] = useState<{sender: string; message: string} []>([])
   const [ userName, setUserName ] = useState("");
   
-  useEffect(() => {
-    socket.on('user-joined', (data) => {
-      console.log(data);
-      setMesages((prev) => [...prev, { sender: 'system', message: data }])
-    })
-  }, [])  // need to fix this bug here 
+  // useEffect(() => {
+  //   socket.on('user-joined', (data) => {
+  //     console.log(data);
+  //     setMesages((prev) => [...prev, { sender: 'system', message: data }])
+  //   })
+  // }, [])  // need to fix this bug here 
 
   // return  () => {
   //   socket.off('user-joined');
