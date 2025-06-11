@@ -2,8 +2,8 @@
 
 import ChatForm from "@/components/ChatForm";
 import ChatMessage from "@/components/ChatMessage";
-import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { socket } from "./lib/socketClients";
 
 export default function Home() {
   const [ room, setRoom ] = useState("");
@@ -11,6 +11,18 @@ export default function Home() {
   const [ messages, setMesages ] = useState<{sender: string; message: string} []>([])
   const [ userName, setUserName ] = useState("");
   
+  useEffect(() => {
+    socket.on('user-joined', (data) => {
+      console.log(data);
+      setMesages((prev) => [...prev, { sender: 'system', message: data }])
+    })
+  }, [])  // need to fix this bug here 
+
+  // return  () => {
+  //   socket.off('user-joined');
+  //   socket.off('message');
+  // }
+
   const handleJoinRoom = () => {
     setJoined(true)
   }

@@ -13,9 +13,23 @@ app.prepare().then(() => {
 
     const httpServer = createServer(handle);
     const io = new Server(httpServer);
+    
     io.on('connection', (socket) => {
-        console.log(`User connected: ${socket}`);
-    })
+        console.log(`User connected: ${socket.id}`);
+        // ({}) -> this is used to return objects in a arrow function 
+            
+        socket.on('join-room', ({room, username}) => {
+            socket.join(room);
+            console.log(`User ${username} joined the room ${room}`)
+            socket.to(room).emit('user-joined', `${username} joined the room ${room}`)
+        })
+
+        socket.on('disconnect', () => {
+            console.log(`User diconnected, ${socket.id}`)
+        })
+
+    });
+    
 
     httpServer.listen(port, () => {
         console.log(`Server running on https://${hostname}:${port}`);
