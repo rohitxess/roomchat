@@ -11,25 +11,38 @@ export default function Home() {
   const [ messages, setMesages ] = useState<{sender: string; message: string} []>([])
   const [ userName, setUserName ] = useState("");
   
-  // useEffect(() => {
-  //   socket.on('user-joined', (data) => {
-  //     console.log(data);
-  //     setMesages((prev) => [...prev, { sender: 'system', message: data }])
-  //   })
-  // }, [])  // need to fix this bug here 
+  useEffect(() => {
+    socket.on('message', (data) => {
+      setMesages((prev) => [...prev, data]);
+    });
 
-  // return  () => {
-  //   socket.off('user-joined');
-  //   socket.off('message');
-  // }
+    socket.on('user-joined', (data) => {
+      setMesages((prev) => [...prev, { sender: 'system', message: data }])
+    })
+
+
+    return  () => {
+      socket.off('user-joined');
+      socket.off('message');
+    }
+
+  }, [])  // need to fix this bug here 
+
+
 
   const handleJoinRoom = () => {
-    setJoined(true)
+   if (room && userName){
+    socket.emit('join-room', {room, username: userName});
+    setJoined(true);
+   }
   }
 
   const handleSendMessage = (message: string) => {
     console.log(message);
-  }
+    const data = {room, message, sender: userName};
+    setMesages((prev) => [...prev, {sender: userName, message}])
+
+  };
 
   return (
     <div className="flex mt-24 justify-center w-full">
